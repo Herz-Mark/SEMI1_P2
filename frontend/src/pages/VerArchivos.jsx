@@ -9,7 +9,7 @@ export default function Archivos() {
         try {
             const token = localStorage.getItem("taskflow_token");
 
-            const res = await fetch("TU_API_LISTAR", {
+            const res = await fetch(`${import.meta.env.VITE_API_SERVERLESS_URL}/listarArchivos`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,

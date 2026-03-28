@@ -28,7 +28,7 @@ export default function Tareas() {
     if (!uid) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/tasks/${uid}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,7 +59,7 @@ export default function Tareas() {
     if (!title || !uid) return;
 
     try {
-      await fetch("http://localhost:5000/tasks", {
+      await fetch(`${import.meta.env.VITE_API_URL}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export default function Tareas() {
 
   // ELIMINAR
   const eliminar = async (id) => {
-    await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -96,7 +96,7 @@ export default function Tareas() {
   const cambiarEstado = async (id) => {
     const tarea = tareas.find((t) => t.task_id === id);
 
-    await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export default function Tareas() {
   const editar = async (id, newTitle, newDesc) => {
     const tarea = tareas.find((t) => t.task_id === id);
 
-    await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

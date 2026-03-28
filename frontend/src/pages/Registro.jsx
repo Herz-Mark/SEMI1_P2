@@ -93,9 +93,9 @@ export default function Registro() {
     }
 
     try {
-      // 1. Subir la imagen a MinIO
+      // 1. Subir usando serverless
       const uploadResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/usuarios/subir-foto`,
+        `${import.meta.env.VITE_API_SERVERLESS_URL}/subirPerfil`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

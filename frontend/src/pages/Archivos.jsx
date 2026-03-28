@@ -29,10 +29,15 @@ export default function Archivos() {
         setMensaje("Subiendo archivo...");
         setError(false);
 
-          const token = localStorage.getItem("taskflow_token");
+        const token = localStorage.getItem("taskflow_token");
 
+        // 1. Decidir a qué función Serverless enviar el archivo
+        const esImagen = file.type.startsWith("image/");
+        const endpoint = esImagen ? "/subirImagen" : "/subirDocumento";
+
+        // 2. Hacer la petición a la URL dinámica
         const response = await fetch(
-          import.meta.env.VITE_API_SERVERLESS_URL,
+          `${import.meta.env.VITE_API_SERVERLESS_URL}${endpoint}`,
           {
             method: "POST",
             headers: {
