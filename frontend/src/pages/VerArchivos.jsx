@@ -31,8 +31,8 @@ export default function Archivos() {
 
     const filteredFiles = files.filter((f) => {
         if (filter === "all") return true;
-        if (filter === "imagen") return f.file_type === "Imagen";
-        if (filter === "documento") return f.file_type === "Documento";
+        if (filter === "imagen") return f.file_type?.toLowerCase() === "imagen";
+        if (filter === "documento") return f.file_type?.toLowerCase() === "documento";
         return true;
     });
 
