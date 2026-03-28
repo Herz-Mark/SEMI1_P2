@@ -1,0 +1,44 @@
+# Ignora cualquier archivo de variables de entorno en cualquier carpeta
+.env
+.env.*
+*.env
+
+# Evita subir los gigabytes de datos de prueba de MySQL y Minio
+minio_storage/
+mysql_data/
+
+# Dependencias
+node_modules/
+# Archivos de compilación para producción
+dist/
+build/
+# Logs de errores de npm/yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+# Entornos virtuales (Evita subir las librerías instaladas localmente)
+venv/
+env/
+.venv/
+# Logs de pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+# Configuraciones locales de VS Code o IntelliJ/PyCharm
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

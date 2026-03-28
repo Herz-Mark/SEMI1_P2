@@ -55,6 +55,9 @@ export default function Navbar() {
             <Link to="/archivos" className="link-text">
               Archivos
             </Link>
+            <Link to="/verArchivos" className="link-text">
+              Archivos
+            </Link>
             <button
               onClick={handleLogout}
               className="btn-outline"

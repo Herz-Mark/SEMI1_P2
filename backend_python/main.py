@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from src.routes.usuarios_routes import router as usuarios_router
+from src.routes.tareas_routes import router as tareas_router
 
 load_dotenv()
 
@@ -22,6 +23,7 @@ def read_root():
     return {"mensaje": "¡Backend de Python + FastAPI funcionando correctamente!"}
 
 app.include_router(usuarios_router, prefix="/api/usuarios")
+app.include_router(tareas_router, prefix="/api/tasks")
 
 # Health Check para Azure / AWS Load Balancer
 @app.get("/health")
