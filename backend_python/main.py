@@ -23,7 +23,7 @@ def read_root():
     return {"mensaje": "¡Backend de Python + FastAPI funcionando correctamente!"}
 
 app.include_router(usuarios_router, prefix="/api/usuarios")
-app.include_router(tareas_router, prefix="/api/tasks")
+app.include_router(tareas_router, prefix="/api/tareas")
 
 # Health Check para Azure / AWS Load Balancer
 @app.get("/health")

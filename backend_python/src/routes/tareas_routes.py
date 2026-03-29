@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Request
-from src.middlewares.auth_middleware import verificar_token
+from fastapi import APIRouter
 from src.controllers.tareas_controller import (
     obtener_tareas,
     crear_tarea,
@@ -9,29 +8,25 @@ from src.controllers.tareas_controller import (
 
 router = APIRouter()
 
-# GET
-@router.get("/")
-def ruta_obtener_tareas(request: Request):
-    payload = verificar_token(request)
-    return obtener_tareas(payload["uid"])
+# ✅ GET con uid en la URL (como tu frontend)
+@router.get("/{uid}")
+def ruta_obtener_tareas(uid: str):
+    return obtener_tareas(uid)
 
 
-# POST
+# POST (se mantiene igual)
 @router.post("/")
-def ruta_crear_tarea(data: dict, request: Request):
-    payload = verificar_token(request)
-    return crear_tarea(payload["uid"], data)
+def ruta_crear_tarea(data: dict):
+    return crear_tarea(data.get("uid"), data)
 
 
 # PUT
 @router.put("/{id}")
-def ruta_actualizar_tarea(id: int, data: dict, request: Request):
-    verificar_token(request)
+def ruta_actualizar_tarea(id: int, data: dict):
     return actualizar_tarea(id, data)
 
 
 # DELETE
 @router.delete("/{id}")
-def ruta_eliminar_tarea(id: int, request: Request):
-    verificar_token(request)
+def ruta_eliminar_tarea(id: int):
     return eliminar_tarea(id)

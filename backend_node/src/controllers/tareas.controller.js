@@ -1,59 +1,92 @@
-import { getConnection } from "../config/db.js";
+import { getConnection, sql } from "../config/db.js";
 
 // OBTENER
 export const obtenerTareas = async (req, res) => {
-  const uid = req.user.uid;
+  try {
+    const uid = req.user.uid;
 
-  const conn = await getConnection();
-  const [rows] = await conn.execute(
-    "SELECT * FROM tasks WHERE uid = ?",
-    [uid]
-  );
+    const pool = await getConnection();
 
-  res.json(rows);
+    const result = await pool
+      .request()
+      .input("uid", sql.VarChar, uid)
+      .query("SELECT * FROM tasks WHERE uid = @uid");
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("Error obteniendo tareas:", error);
+    res.status(500).json({ error: "Error al obtener tareas" });
+  }
 };
 
 // CREAR
 export const crearTarea = async (req, res) => {
-  const uid = req.user.uid;
-  const { titulo, descripcion } = req.body;
+  try {
+    const uid = req.user.uid;
+    const { titulo, descripcion } = req.body;
 
-  const conn = await getConnection();
+    const pool = await getConnection();
 
-  await conn.execute(
-    "INSERT INTO tasks (uid, titulo, descripcion, estado) VALUES (?, ?, ?, ?)",
-    [uid, titulo, descripcion, "pendiente"]
-  );
+    await pool
+      .request()
+      .input("uid", sql.VarChar, uid)
+      .input("titulo", sql.VarChar, titulo)
+      .input("descripcion", sql.VarChar, descripcion)
+      .input("estado", sql.VarChar, "pendiente")
+      .query(`
+        INSERT INTO tasks (uid, titulo, descripcion, estado)
+        VALUES (@uid, @titulo, @descripcion, @estado)
+      `);
 
-  res.json({ msg: "Tarea creada" });
+    res.json({ msg: "Tarea creada" });
+  } catch (error) {
+    console.error("Error creando tarea:", error);
+    res.status(500).json({ error: "Error al crear tarea" });
+  }
 };
 
 // ACTUALIZAR
 export const actualizarTarea = async (req, res) => {
-  const { id } = req.params;
-  const { titulo, descripcion, estado } = req.body;
+  try {
+    const { id } = req.params;
+    const { titulo, descripcion, estado } = req.body;
 
-  const conn = await getConnection();
+    const pool = await getConnection();
 
-  await conn.execute(
-    "UPDATE tasks SET titulo=?, descripcion=?, estado=? WHERE task_id=?",
-    [titulo, descripcion, estado, id]
-  );
+    await pool
+      .request()
+      .input("id", sql.Int, id)
+      .input("titulo", sql.VarChar, titulo)
+      .input("descripcion", sql.VarChar, descripcion)
+      .input("estado", sql.VarChar, estado)
+      .query(`
+        UPDATE tasks 
+        SET titulo=@titulo, descripcion=@descripcion, estado=@estado
+        WHERE task_id=@id
+      `);
 
-  res.json({ msg: "Actualizada" });
+    res.json({ msg: "Actualizada" });
+  } catch (error) {
+    console.error("Error actualizando tarea:", error);
+    res.status(500).json({ error: "Error al actualizar" });
+  }
 };
-
 
 // ELIMINAR
 export const eliminarTarea = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const conn = await getConnection();
+    const pool = await getConnection();
 
-  await conn.execute(
-    "DELETE FROM tasks WHERE task_id=?",
-    [id]
-  );
+    await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("DELETE FROM tasks WHERE task_id=@id");
 
-  res.json({ msg: "Eliminada" });
+    res.json({ msg: "Eliminada" });
+  } catch (error) {
+    console.error("Error eliminando tarea:", error);
+    res.status(500).json({ error: "Error al eliminar" });
+  }
 };

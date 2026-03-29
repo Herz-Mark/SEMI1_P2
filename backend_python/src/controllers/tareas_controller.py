@@ -18,6 +18,9 @@ def obtener_tareas(uid):
 
 # CREAR
 def crear_tarea(uid, data):
+    if not uid:
+        raise HTTPException(status_code=400, detail="UID requerido")
+        
     conn = get_connection()
     cursor = conn.cursor()
 

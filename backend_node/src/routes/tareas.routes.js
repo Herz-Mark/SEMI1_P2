@@ -3,23 +3,21 @@ import {
   obtenerTareas,
   crearTarea,
   actualizarTarea,
-  eliminarTarea
+  eliminarTarea,
 } from "../controllers/tareas.controller.js";
-
-import { verificarToken } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 // GET
-router.get("/", verificarToken, obtenerTareas);
+router.get("/:uid", obtenerTareas);
 
 // POST
-router.post("/", verificarToken, crearTarea);
+router.post("/", crearTarea);
 
 // PUT
-router.put("/:id", verificarToken, actualizarTarea);
+router.put("/:id", actualizarTarea);
 
 // DELETE
-router.delete("/:id", verificarToken, eliminarTarea);
+router.delete("/:id", eliminarTarea);
 
 export default router;

@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 // --- RUTAS DE LA API ---
 app.use("/api/usuarios", require("./routes/usuarios.routes"));
-app.use("/api/tareas", require("./routes/usuarios.routes"));
+app.use("/api/tareas", require("./routes/tareas.routes"));
 
 // Health Check para Azure / AWS Load Balancer
 app.get("/health", (req, res) => {

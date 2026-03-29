@@ -24,30 +24,36 @@ export default function Tareas() {
   const uid = obtenerUidDesdeToken();
 
   // CARGAR DESDE BACKEND
-  const cargarTareas = async () => {
-    if (!uid) return;
-
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/${uid}`, {
+const cargarTareas = async () => {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/tareas`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
-      const data = await res.json();
+    const data = await res.json();
 
-      const adaptadas = data.map((t) => ({
-        task_id: t.task_id,
-        title: t.titulo,
-        description: t.descripcion,
-        status: t.estado,
-      }));
-
-      setTareas(adaptadas);
-    } catch (error) {
-      console.error("Error cargando tareas:", error);
+    if (!Array.isArray(data)) {
+      console.error("Respuesta no es array:", data);
+      return;
     }
-  };
+
+    const adaptadas = data.map((t) => ({
+      task_id: t.task_id,
+      title: t.titulo,
+      description: t.descripcion,
+      status: t.estado,
+    }));
+
+    setTareas(adaptadas);
+  } catch (error) {
+    console.error("Error cargando tareas:", error);
+  }
+};
 
   useEffect(() => {
     cargarTareas();
