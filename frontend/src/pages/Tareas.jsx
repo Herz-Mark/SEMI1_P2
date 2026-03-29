@@ -20,56 +20,57 @@ export default function Tareas() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const token = localStorage.getItem("token");
+  // usa SIEMPRE el mismo nombre
+  const token = localStorage.getItem("taskflow_token");
   const uid = obtenerUidDesdeToken();
 
-  // CARGAR DESDE BACKEND
-const cargarTareas = async () => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/tareas`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  // =========================
+  // CARGAR
+  // =========================
+  const cargarTareas = async () => {
+    if (!uid) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/tareas/${uid}`
+      );
+
+      const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        console.error("Respuesta no es array:", data);
+        return;
       }
-    );
 
-    const data = await res.json();
+      const adaptadas = data.map((t) => ({
+        task_id: t.task_id,
+        title: t.titulo,
+        description: t.descripcion,
+        status: t.estado,
+      }));
 
-    if (!Array.isArray(data)) {
-      console.error("Respuesta no es array:", data);
-      return;
+      setTareas(adaptadas);
+    } catch (error) {
+      console.error("Error cargando tareas:", error);
     }
-
-    const adaptadas = data.map((t) => ({
-      task_id: t.task_id,
-      title: t.titulo,
-      description: t.descripcion,
-      status: t.estado,
-    }));
-
-    setTareas(adaptadas);
-  } catch (error) {
-    console.error("Error cargando tareas:", error);
-  }
-};
+  };
 
   useEffect(() => {
     cargarTareas();
   }, []);
 
+  // =========================
   // CREAR
+  // =========================
   const crearTarea = async (e) => {
     e.preventDefault();
     if (!title || !uid) return;
 
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/tasks`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/tareas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           uid,
@@ -86,27 +87,27 @@ const cargarTareas = async () => {
     }
   };
 
+  // =========================
   // ELIMINAR
+  // =========================
   const eliminar = async (id) => {
-    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/tareas/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
 
     cargarTareas();
   };
 
-  //  CAMBIAR ESTADO
+  // =========================
+  // CAMBIAR ESTADO
+  // =========================
   const cambiarEstado = async (id) => {
     const tarea = tareas.find((t) => t.task_id === id);
 
-    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/tareas/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         titulo: tarea.title,
@@ -119,15 +120,16 @@ const cargarTareas = async () => {
     cargarTareas();
   };
 
-  // 🔹 EDITAR
+  // =========================
+  // EDITAR
+  // =========================
   const editar = async (id, newTitle, newDesc) => {
     const tarea = tareas.find((t) => t.task_id === id);
 
-    await fetch(`${import.meta.env.VITE_API_URL}/tasks/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/tareas/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         titulo: newTitle,
@@ -139,7 +141,6 @@ const cargarTareas = async () => {
     cargarTareas();
   };
 
-  // botón bonito
   const botonEstilo = {
     padding: "10px 15px",
     borderRadius: "10px",
@@ -157,52 +158,26 @@ const cargarTareas = async () => {
       <div className="form-card" style={{ maxWidth: "900px" }}>
         <h2 className="form-title">Gestión de Tareas</h2>
 
-        {/* FORM */}
         <form onSubmit={crearTarea}>
           <input
             type="text"
             placeholder="Título de la tarea"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-            }}
           />
 
           <textarea
             placeholder="Descripción"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-            }}
           />
 
-          <button
-            type="submit"
-            style={botonEstilo}
-            onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
-            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
-          >
+          <button type="submit" style={botonEstilo}>
             Crear tarea 🚀
           </button>
         </form>
 
-        {/* LISTA */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            gap: "15px",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ marginTop: "20px" }}>
           {tareas.map((task) => (
             <TaskCard
               key={task.task_id}
