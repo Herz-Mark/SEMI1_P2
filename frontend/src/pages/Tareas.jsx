@@ -20,7 +20,6 @@ export default function Tareas() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  // usa SIEMPRE el mismo nombre
   const token = localStorage.getItem("taskflow_token");
   const uid = obtenerUidDesdeToken();
 
@@ -141,6 +140,9 @@ export default function Tareas() {
     cargarTareas();
   };
 
+  // =========================
+  // ESTILO BOTÓN
+  // =========================
   const botonEstilo = {
     padding: "10px 15px",
     borderRadius: "10px",
@@ -158,26 +160,52 @@ export default function Tareas() {
       <div className="form-card" style={{ maxWidth: "900px" }}>
         <h2 className="form-title">Gestión de Tareas</h2>
 
+        {/* FORM */}
         <form onSubmit={crearTarea}>
           <input
             type="text"
             placeholder="Título de la tarea"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "8px",
+            }}
           />
 
           <textarea
             placeholder="Descripción"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "8px",
+            }}
           />
 
-          <button type="submit" style={botonEstilo}>
+          <button
+            type="submit"
+            style={botonEstilo}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+          >
             Crear tarea 🚀
           </button>
         </form>
 
-        <div style={{ marginTop: "20px" }}>
+        {/* LISTA */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gap: "15px",
+            marginTop: "20px",
+          }}
+        >
           {tareas.map((task) => (
             <TaskCard
               key={task.task_id}
